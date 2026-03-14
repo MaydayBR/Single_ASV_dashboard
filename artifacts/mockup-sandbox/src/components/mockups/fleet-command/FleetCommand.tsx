@@ -735,56 +735,16 @@ function FleetCommanderPanel({ episode, ownship }: FleetCommanderPanelProps) {
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{
-            width: 32, height: 32, borderRadius: "50%",
-            background: "rgba(56,189,248,0.12)",
-            border: "1px solid rgba(56,189,248,0.35)",
-            display: "flex", alignItems: "center", justifyContent: "center",
+            width: 36, height: 36, borderRadius: "50%",
+            border: "1.5px solid rgba(56,189,248,0.45)",
             flexShrink: 0, overflow: "hidden",
+            boxShadow: "0 0 0 2px rgba(56,189,248,0.1)",
           }}>
-            {/* Captain avatar — inline SVG */}
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Background circle */}
-              <circle cx="16" cy="16" r="16" fill="rgba(56,189,248,0.10)" />
-
-              {/* Captain's hat — brim */}
-              <rect x="8" y="11" width="16" height="2.5" rx="1.2" fill="#38bdf8" />
-              {/* Hat body */}
-              <rect x="10.5" y="5" width="11" height="7" rx="2" fill="#1e3a5f" />
-              {/* Hat band */}
-              <rect x="10.5" y="10" width="11" height="2" fill="#0ea5e9" />
-              {/* Hat insignia */}
-              <circle cx="16" cy="8" r="1.5" fill="#38bdf8" />
-              <line x1="16" y1="6.5" x2="16" y2="9.5" stroke="#0d1526" strokeWidth="0.6" />
-              <line x1="14.5" y1="8" x2="17.5" y2="8" stroke="#0d1526" strokeWidth="0.6" />
-
-              {/* Neck */}
-              <rect x="14.2" y="21" width="3.6" height="3" fill="#c8a07a" />
-
-              {/* Face */}
-              <ellipse cx="16" cy="18" rx="5" ry="5.5" fill="#d4a07a" />
-
-              {/* Eyes */}
-              <ellipse cx="13.8" cy="17.2" rx="0.9" ry="0.9" fill="#1e293b" />
-              <ellipse cx="18.2" cy="17.2" rx="0.9" ry="0.9" fill="#1e293b" />
-              {/* Eye glint */}
-              <circle cx="14.2" cy="16.9" r="0.3" fill="white" />
-              <circle cx="18.6" cy="16.9" r="0.3" fill="white" />
-
-              {/* Eyebrows */}
-              <path d="M12.8 15.8 Q13.8 15.2 14.8 15.8" stroke="#7a5c3a" strokeWidth="0.7" strokeLinecap="round" fill="none" />
-              <path d="M17.2 15.8 Q18.2 15.2 19.2 15.8" stroke="#7a5c3a" strokeWidth="0.7" strokeLinecap="round" fill="none" />
-
-              {/* Nose */}
-              <ellipse cx="16" cy="19.2" rx="0.7" ry="0.5" fill="#b8875a" />
-
-              {/* Mouth — slight confident smile */}
-              <path d="M14.2 21 Q16 22.2 17.8 21" stroke="#8a5a3a" strokeWidth="0.8" strokeLinecap="round" fill="none" />
-
-              {/* Collar / uniform shoulders */}
-              <path d="M10 32 Q10 26 16 25 Q22 26 22 32 Z" fill="#1e3a5f" />
-              {/* Collar detail */}
-              <path d="M16 25 L13.5 28 L16 27.5 L18.5 28 Z" fill="#0ea5e9" />
-            </svg>
+            <img
+              src="/__mockup/images/captain-avatar.png"
+              alt="Fleet Commander"
+              style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }}
+            />
           </div>
           <div>
             <div style={{ fontSize: 11, color: "#38bdf8", fontFamily: "monospace", letterSpacing: "0.07em", textTransform: "uppercase" }}>
