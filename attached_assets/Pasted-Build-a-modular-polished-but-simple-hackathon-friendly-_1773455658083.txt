@@ -1,0 +1,141 @@
+Build a modular, polished-but-simple, hackathon-friendly frontend UI for an existing TypeScript codebase called FleetCommand.
+
+Context:
+
+Product: FleetCommand
+Use case: Saronic Hackathon Track #1: UI — Visualizing Autonomous Decisions
+Goal: a mission-ready, low-clutter, single-vessel autonomy explanation console
+The operator should quickly understand:
+what the vessel is doing now
+why it is doing that
+what risk or constraint is driving behavior
+what it will likely do next
+whether the operator needs to care yet
+No user authentication
+Use realistic dummy maritime mission data until real data exists
+Avoid overengineering
+Output should integrate cleanly into an existing TypeScript codebase and stay loosely coupled from backend/data-source assumptions
+Architectural rules you must respect:
+
+The system has 4 layers:
+Ingestion Layer
+Adaptive Normalization Layer
+Explanation Layer
+Presentation Layer
+The frontend you generate belongs mainly to the Presentation Layer, but it must be shaped so it can plug into normalized data and explanation outputs later
+The UI must never depend directly on unknown/raw external schema shapes
+Assume the app is built around normalized internal objects and an explanation layer
+Design state flow so live streaming data and replayed data could both work later without redesigning the UI
+Important implementation constraint:
+
+Treat the normalized data model as the UI contract
+Do not tightly couple components to backend endpoints, raw WebSocket payloads, or API-specific assumptions
+Keep components easy to replace, extend, or reconnect to real normalized data later
+Tech expectations:
+
+Use React + TypeScript
+Prefer a modular component architecture
+Keep styling simple, polished, readable under time pressure, and mission-ready
+Favor clarity over decorative complexity
+Support dark, operations-style visuals with good hierarchy and restrained color use
+Use reusable components and clean prop interfaces
+Keep logic composable and hackathon-friendly
+Please generate:
+
+A suggested frontend file/component structure
+The main page layout
+Reusable React/TypeScript components
+Mock normalized data objects
+Clean prop interfaces and types
+Simple but polished styling
+A modular state/data flow that can later connect to real normalized data
+A minimal explanation synthesizer stub or interface shape only as needed for wiring the UI, without inventing backend complexity
+The UI must include these 3 main areas:
+
+Main Mission Map Requirements:
+ownship position and heading
+planned route and actual path
+waypoint markers
+mission/search polygon
+nearby contacts
+hazard/boundary zones if present
+stale-data or degraded-comms indicators
+selected event or selected contact context can visually highlight related items
+it is okay to use a simplified 2D mission map implementation or placeholder rendering if that keeps the code modular and easy to integrate
+Event Timeline / Alert Feed Requirements:
+meaningful events only
+reverse chronological or otherwise easy-to-scan chronological layout
+severity-based styling
+event click interaction
+selected event should highlight related context and update explanation focus
+designed as the historical context layer for the explanation system
+each event should be concise and scannable by default, with room for deeper detail
+event types should feel operator-friendly, not raw-log-like
+Fleet Commander Explanation Panel Requirements:
+captain-style copilot panel
+calm, concise, professional tone
+response format:
+Situation
+Reason
+Confidence
+Recommendation
+explanation content should include:
+what changed
+why
+2–4 evidence points
+expected next step
+prioritize operator attention toward the most important issue first
+should react to currently selected timeline event and current vessel state
+should feel grounded in mission context, contact risk, route progress, alerts, and comms freshness
+Use a normalized internal data model shaped around concepts like:
+
+OwnshipState
+MissionObject
+Contact
+AlertEvent
+DecisionEpisode
+optional CommsStatus
+optional telemetry/system health Do not build the UI around raw transport payloads.
+Create realistic mock normalized data for:
+
+ownship
+route and actual track
+waypoints
+mission polygon
+contacts with some risk variation
+alerts/events
+explanation content
+stale/degraded comms example Make the sample data believable for a maritime autonomy demo.
+Design guidance:
+
+low clutter
+readable under time pressure
+mission-ready operator feel
+polished but simple
+clear visual hierarchy
+concise labels
+limited but meaningful severity colors
+avoid gimmicks, except a subtle captain/copilot identity for Fleet Commander
+no auth screens, no unnecessary settings surfaces, no dashboard bloat
+
+Future extensibility to allow without redesign:
+
+replay controls
+weather overlays
+video/sensor panel
+more vessel context
+eventual multi-vessel support through the same normalization layer, while UI remains centered on one selected ownship
+Deliverables:
+
+Suggested file tree
+Component list and responsibilities
+TypeScript interfaces/types
+Main page implementation
+Reusable subcomponents
+Mock data module(s)
+Styling approach
+State wiring between map, timeline, and Fleet Commander
+Clear inline comments where structure matters
+If you need to choose libraries, prefer lightweight, common frontend tools that fit an existing TypeScript React app. Keep dependencies minimal. If a map library would add too much complexity, provide a clean mission-map component abstraction with a simple implementation and clear upgrade path.
+
+Generate code that is ready to paste into an existing TypeScript frontend project.
