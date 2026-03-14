@@ -1,17 +1,51 @@
+# ============================================================================
+# REPLIT ARTIFACT CONFIGURATION
+# ============================================================================
+# This file tells Replit how to run and route this artifact.
+#
+# What is an artifact?
+# An artifact is a self-contained deployable service in a Replit workspace.
+# Multiple artifacts can coexist in the same Repl, each serving different paths.
+#
+# This artifact serves the FleetCommand UI mockup/preview system.
+# ============================================================================
+
+# Artifact type: "design" means this is a UI/component preview artifact
 kind = "design"
+
+# Preview path: URL prefix where this artifact is accessible
+# All routes in this artifact will be under /__mockup/*
+# Example: /__mockup/preview/fleet-command/FleetCommand
 previewPath = "/__mockup"
+
+# Human-readable title shown in Replit UI
 title = "Component Preview Server"
+
+# Artifact version (for tracking)
 version = "1.0.0"
+
+# Unique artifact ID assigned by Replit
 id = "XegfDyZt7HqfW2Bb8Ghoy"
 
+# ─── Service Configuration ──────────────────────────────────────────────────
+# Services define how this artifact runs and which ports/paths it uses
+
 [[services]]
+# Port this service listens on internally
 localPort = 8081
+
+# Service name (shown in Replit)
 name = "Component Preview Server"
+
+# URL paths routed to this service
+# Requests to /__mockup/* will be forwarded to port 8081
 paths = ["/__mockup"]
 
+# Environment variables injected when running this service
 [services.env]
-PORT = "8081"
-BASE_PATH = "/__mockup"
+PORT = "8081"           # Vite dev server will listen on this port
+BASE_PATH = "/__mockup" # Vite will use this as the base URL for all assets
 
+# Development command: how Replit starts this artifact in dev mode
 [services.development]
 run = "pnpm --filter @workspace/mockup-sandbox run dev"
