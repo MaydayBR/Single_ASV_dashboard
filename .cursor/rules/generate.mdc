@@ -10,7 +10,7 @@ You are an expert technical analyst and implementation planner. Your primary rol
 
 ## Project Context (FleetCommand / Saronic Hackathon)
 When generating plans for this workspace, assume:
-- **Product:** FleetCommand — a feedback loop to help operators understand what Autonomous Surface Vessels (ASVs) are thinking.
+- **Product:** FleetCommand — a feedback loop to help operators understand what a single Autonomous Surface Vessel (ASV) is thinking.
 - **Context:** Saronic Hackathon, **Track #1: UI — Visualizing Autonomous Decisions.** Using provided data streams and publicly available maritime data, design interfaces that make autonomy transparent, intuitive, and mission-ready.
 - **Objective:** A single-vessel autonomy inspection/explanation console. The UI must answer:
   1. What is the vessel doing right now?
@@ -20,12 +20,20 @@ When generating plans for this workspace, assume:
   5. Does the operator need to care yet?
 - **Constraints:** Use dummy maritime mission data until real data is available; keep code modular and hackathon-friendly; avoid overengineering.
 
+## Replit Workspace Integration
+The codebase is a **pnpm monorepo** (see `/replit.md`). Generated plans must align with this layout:
+- **FleetCommand UI (Presentation Layer):** `artifacts/mockup-sandbox` — React, Vite, Tailwind; Replit design artifact; FleetCommand mockup at `src/components/mockups/fleet-command/FleetCommand.tsx`. New FleetCommand UI work (map, timeline, Fleet Commander) belongs here or in shared libs consumed by it.
+- **API / backend:** `artifacts/api-server` (Express 5). Shared libs: `lib/api-spec`, `lib/api-client-react`, `lib/api-zod`, `lib/db`.
+- **Scripts:** `scripts` package for utility scripts.
+- When creating or updating `project_structure.md`, mirror and extend the structure described in `/replit.md` and `pnpm-workspace.yaml`; do not invent a conflicting layout.
+- When creating or updating `Implementation.md`, reference running the UI via `pnpm --filter @workspace/mockup-sandbox run dev` and API via `pnpm --filter @workspace/api-server run dev`.
+
 ## Core Workflow
 
 ### Step 1: PRD Analysis
 When given a PRD, you must:
-1. **Read and understand the entire document thoroughly** (for FleetCommand, also read all files in `/Descriptive_docs_for_docs/` and `Descriptive_docs_for_docs/Extra_info/` to capture full feature and phase requirements)
-2. **Extract and list all features mentioned in the PRD** (and from the descriptive docs: map, timeline, Fleet Commander, normalizeRawFeed, phases, extra features)
+1. **Read and understand the entire document thoroughly** 
+2. **Extract and list all features mentioned in the PRD** 
 3. **Categorize features by priority (must-have, should-have, nice-to-have)**
 4. **Identify technical requirements and constraints** (e.g. dummy data until real data; modular, hackathon-friendly; UI independent of raw schema)
 5. **Note any integration requirements or dependencies**
@@ -91,7 +99,7 @@ When generating the implementation plan, ensure these are included as early deli
 4. **Define adapter interfaces** — for mapping unknown/Saronic message shapes into canonical forms.
 5. **Generate the initial app scaffold** — modular, hackathon-friendly.
 6. **Create realistic mock maritime data** — for development and demos until real data exists.
-7. **UI:** polished but simple; avoid overengineering.
+7. **UI:** polished but simple; avoid overengineering. Utilize Replit UI before opting to write new code
 
 ### Three Code Phases (align implementation stages to these)
 - **Phase 1 — Adaptive Layer:** Convert whatever raw schema is provided into a stable internal format. Support multiple possible raw inputs: websocket events, REST polling, JSON files, replay logs, CSV/MCAP-like exports, sample telemetry bundles. Define canonical JSON Schemas per data category. Adapters map incoming Saronic messages (unknown shape) into these canonical forms so the UI relies on stable types only.

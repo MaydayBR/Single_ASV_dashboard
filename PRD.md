@@ -82,6 +82,14 @@ Build a single-vessel autonomy explanation console that helps an operator quickl
 
 ---
 
+📁 **Workspace & technical context**
+- **Monorepo:** pnpm workspace (see `replit.md`). TypeScript 5.9, composite projects; typecheck from root: `pnpm run typecheck`.
+- **FleetCommand UI:** Lives in `artifacts/mockup-sandbox` — React, Vite, Tailwind; Replit design artifact with component preview. Main FleetCommand mockup: `artifacts/mockup-sandbox/src/components/mockups/fleet-command/FleetCommand.tsx`. The UI is the Presentation Layer and must consume only normalized data and explanation outputs (see `Docs/arch.md`).
+- **API / backend:** `artifacts/api-server` (Express 5). Shared libs in `lib/` (api-spec, api-client-react, api-zod, db).
+- **Run commands:** UI dev: `pnpm --filter @workspace/mockup-sandbox run dev`; API dev: `pnpm --filter @workspace/api-server run dev`.
+
+---
+
 📁 **Resources Available*
 - Docs/Potential_info.md: It provides information on potential data I MAY be given. My code should be prepared to handle all of these types
 - Docs/arch.md: describes the 4 phases of my code architecture, and how my code should flow 
