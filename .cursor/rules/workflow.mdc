@@ -59,6 +59,17 @@ Mark tasks complete only when:
 - No errors or warnings remain
 - All task list items completed (if applicable)
 
+#### 8. Logging for Quick Debugging
+
+When generating or modifying code, include logging so debugging is fast (especially for hackathons and vibe coding):
+
+- **Entry/exit:** Log when non-trivial functions or handlers run (e.g. `normalizeRawFeed` called, API route hit, adapter received message).
+- **Key state:** Log important values (IDs, counts, selected item, error payloads) — avoid logging huge objects; log enough to reproduce.
+- **Errors:** Always log caught errors with context (where, what input) before rethrowing or returning; use `console.error` or your logger.
+- **Structured labels:** Use a consistent prefix or namespace (e.g. `[FleetCommand:Normalize]`, `[API:explain]`) so logs are easy to filter in the dev tools.
+
+This makes it easy to trace flow and fix bugs quickly without guessing.
+
 ### File Reference Priority
 
 1. `/Docs/Bug_tracking.md` - Check for known issues first
@@ -75,8 +86,9 @@ Mark tasks complete only when:
 - **NEVER** fix errors without checking Bug_tracking.md first
 - **ALWAYS** document errors and solutions
 - **ALWAYS** follow the established workflow process
+- **ALWAYS** add logging when generating code so debugging is quick and easy (entry/exit, key state, errors, consistent labels)
 
-Remember: Build a cohesive, well-documented, and maintainable project. Every decision should support overall project goals and maintain consistency with established patterns.# Development Agent Workflow - Cursor Rules
+Remember: Build a cohesive, well-documented, and maintainable project. Every decision should support overall project goals and maintain consistency with established patterns and the Replit workspace layout.
 
 ## Primary Directive
 
@@ -132,6 +144,17 @@ Mark tasks complete only when:
 - UI/UX matches specifications (if applicable)
 - No errors or warnings remain
 - All task list items completed (if applicable)
+
+#### 8. Logging for Quick Debugging
+
+When generating or modifying code, include logging so debugging is fast (especially for hackathons and vibe coding):
+
+- **Entry/exit:** Log when non-trivial functions or handlers run (e.g. `normalizeRawFeed` called, API route hit, adapter received message).
+- **Key state:** Log important values (IDs, counts, selected item, error payloads) — avoid logging huge objects; log enough to reproduce.
+- **Errors:** Always log caught errors with context (where, what input) before rethrowing or returning; use `console.error` or your logger.
+- **Structured labels:** Use a consistent prefix or namespace (e.g. `[FleetCommand:Normalize]`, `[API:explain]`) so logs are easy to filter in the dev tools.
+
+This makes it easy to trace flow and fix bugs quickly without guessing.
 
 ### File Reference Priority
 
