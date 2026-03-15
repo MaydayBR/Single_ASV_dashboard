@@ -59,20 +59,21 @@ Before creating the implementation plan:
    - Timeline considerations
 
 ### Step 4: Implementation Staging
-Break down the implementation into logical stages, **aligned with the three code phases** (Adaptive → Explanation → Presentation) when generating plans for FleetCommand:
+Break down the implementation into logical stages:
 1. **Stage 1: Foundation & Setup** (Adaptive Layer)
-   - Environment setup, project structure, flowchart
-   - Canonical types and adapter interfaces; normalizeRawFeed
-   - Mock maritime data
-2. **Stage 2: Core Features** (Explanation + Presentation)
-   - Explanation synthesizer; main map; event timeline; Fleet Commander
-   - Main user flows answering the five operator questions
+   - Environment setup
+   - Core architecture
+   - Basic infrastructure
+2. **Stage 2: Core Features** 
+   - Essential functionality
+   - Main user flows
 3. **Stage 3: Advanced Features**
-   - Comms/telemetry, replay abstraction, data-source preparedness
-   - Complex functionality and integrations
+   - Complex functionality
+   - Integrations
 4. **Stage 4: Polish & Optimization**
-   - UI/UX enhancements, performance, testing
-   - Optional: real map/ASV locations, video, overlays, replay, 3D view
+   - UI/UX enhancements
+   - Performance optimization
+   - Testing and debugging
 
 ### Step 5: Detailed Implementation Plan Creation
 For each stage, create:
@@ -91,50 +92,37 @@ function normalizeRawFeed(raw: unknown): NormalizedMissionState
 ```
 Everything depends on this. If the schema changes, only the normalization logic changes. **The UI must never directly depend on raw input shape.**
 
-### Pre-Implementation Deliverables (from Instructions)
-When generating the implementation plan, ensure these are included as early deliverables:
-1. **Propose folder structure** — align with `/Docs/project_structure.md`.
-2. **Create a flowchart** of how the app will work (data flow: raw → normalize → explanation → presentation).
-3. **Define internal TypeScript models** — canonical types the UI consumes (see Phases below).
-4. **Define adapter interfaces** — for mapping unknown/Saronic message shapes into canonical forms.
-5. **Generate the initial app scaffold** — modular, hackathon-friendly.
-6. **Create realistic mock maritime data** — for development and demos until real data exists.
-7. **UI:** polished but simple; avoid overengineering. Utilize Replit UI before opting to write new code
+### Four Code Phases (align implementation stages to these)
+1. **Ingestion Layer** (future)
+   - Connects to maritime data sources (WebSocket, REST, replay files)
+   - Handles live streaming and recorded replay modes
+   - Emits unified event stream regardless of source
 
-### Three Code Phases (align implementation stages to these)
-- **Phase 1 — Adaptive Layer:** Convert whatever raw schema is provided into a stable internal format. Support multiple possible raw inputs: websocket events, REST polling, JSON files, replay logs, CSV/MCAP-like exports, sample telemetry bundles. Define canonical JSON Schemas per data category. Adapters map incoming Saronic messages (unknown shape) into these canonical forms so the UI relies on stable types only.
-- **Phase 2 — Explanation Layer:** Lightweight “explanation synthesizer” that converts normalized signals into operator-ready explanations. Input: raw-style signals (e.g. nearby contact, low CPA, starboard course change, autonomy mode transit→avoidance). Output: what changed, why it changed, 2–4 observable facts, what is expected next. Example: “Autonomy altered course to starboard to increase separation from crossing traffic. Evidence: CPA 0.18 nm, TCPA 7 min, contact bearing 043°. Next: resume route after safe passing distance.”
-- **Phase 3 — Presentation Layer:** Main map (ownship, route polyline, mission polygons, nearby contacts, selected overlays if implemented, projected path); Event timeline/alert feed; Decision explanation card (Fleet Commander).
+2. **Adaptive Normalization Layer** (future)
+   - Implements `normalizeRawFeed(raw: unknown) -> NormalizedMissionState`
+   - Converts raw Saronic schemas into stable canonical types
+   - Insulates UI from upstream schema changes
+   - **Will use:** Type definitions currently in FleetCommand.tsx (extract to lib/types)
+
+3. **Explanation Layer** (future)
+   - Synthesizes normalized signals into operator-ready explanations
+   - Generates DecisionEpisodes (Situation/Reason/Confidence/Recommendation)
+   - **Will use:** API endpoints for explanation generation
+   - **Current mockup:** DecisionEpisodes are hardcoded in FleetCommand.tsx
+
+4. **Presentation Layer** (exists now)
+   - **Already implemented:** FleetCommand mockup in `artifacts/mockup-sandbox`
+   - Three panels: Mission Map, Event Timeline, Fleet Commander
+   - Consumes normalized types (OwnshipState, Contact, AlertEvent, etc.)
+   - **Current limitation:** Uses inline mock data instead of real normalized feeds
 
 ### Canonical Types (define these in plan / project_structure)
-Include at least: `OwnshipState`, `MissionObject` (waypoint, route, area, searchPattern), `Contact`, `AlertEvent`, `DecisionEpisode`; optionally Video/Camera metadata, Comms Status, Telemetry (system health, battery). See `/Descriptive_docs_for_docs/Phases_of_code.md` for full field definitions.
-
-### Main Mission Map Requirements
-The main mission map must show: (1) ownship position, (2) planned vs actual path, (3) waypoint(s), (4) mission/search polygon, (5) nearby contacts, (6) hazard/boundary zones if provided.
-
-### Event Timeline / Alert Feed Requirements
-An interactive event timeline/alert feed must: (1) show recent events in timed order, (2) filter to meaningful ones only, (3) color-code by severity, (4) allow clicking through events with feedback from Fleet Commander.
-
-### Fleet Commander (AI Captain) Requirements
-The Fleet Commander must: explain autonomous decisions, give a fleet summary, prioritize operator attention, recommend next action. It must include: natural language input, recommended actions, ability to reference selected vessel context, awareness of current alerts and mission state. Response format: **Situation** → **Reason** → **Confidence** → **Recommendation** (with explanation). Example: “Situation: Vessel slowed below expected speed. Reason: Obstacle on projected path. Confidence: 91%. Recommendation: Monitor only.”
-
-### Extra Features (only if time permits)
-Include as optional / later stages: (1) real map location and actual locations of all ASVs from given data, (2) video/camera/sensor screen, (3) selected overlays (e.g. weather), (4) replay controller, (5) 3D AR / spatial view (e.g. three.js, bathymetry) for spatial intuition.
+Include at least: `OwnshipState`, `MissionObject` (waypoint, route, area, searchPattern), `Contact`, `AlertEvent`, `DecisionEpisode`; optionally Video/Camera metadata, Comms Status, Telemetry (system health, battery).
 
 ### Data Source Preparedness (Potential Info)
-Plans should prepare for (adapters / UI tolerance): mission telemetry and vehicle state (variable rates, missing fields, comms-degraded); autonomy decision state and alerts (timestamped decision points: label, rationale, implication); video/EO-IR; mission planning objects (points, polylines, polygons, pattern layers); comms status and dropouts as first-class UI events (staleness, last-heard, degraded banners); replay logs and scenario packs; AIS-derived traffic; NOAA ENCs, traffic lanes, weather APIs, tides/currents/water levels, bathymetry. See `/Descriptive_docs_for_docs/Extra_info/Potential_info.md`.
+Plans should prepare for (adapters / UI tolerance): mission telemetry and vehicle state (variable rates, missing fields, comms-degraded); autonomy decision state and alerts (timestamped decision points: label, rationale, implication); video/EO-IR; mission planning objects (points, polylines, polygons, pattern layers); comms status and dropouts as first-class UI events (staleness, last-heard, degraded banners); replay logs and scenario packs; AIS-derived traffic; NOAA ENCs, traffic lanes, weather APIs, tides/currents/water levels, bathymetry. See `Docs/Potential_info.md`.
 
-### Reference Documentation (source of truth)
-When filling out Implementation.md, project_structure.md, and UI_UX_doc.md, use these sources:
-- `/Descriptive_docs_for_docs/Instructions.md` — folder structure, flowchart, TypeScript models, adapters, scaffold, mock data, UI principles, normalizeRawFeed
-- `/Descriptive_docs_for_docs/Phases_of_code.md` — Adaptive / Explanation / Presentation phases; canonical type definitions (OwnshipState, MissionObject, Contact, AlertEvent, DecisionEpisode, video/comms/telemetry)
-- `/Descriptive_docs_for_docs/Main_mission_map.md` — map requirements (ownship, path, waypoints, polygon, contacts, hazards)
-- `/Descriptive_docs_for_docs/Event_Timeline.md` — event timeline/alert feed behavior
-- `/Descriptive_docs_for_docs/Fleet_Commander.md` — AI captain behavior and response format
-- `/Descriptive_docs_for_docs/Extra_features.md` — optional features if time permits
-- `/Descriptive_docs_for_docs/Other_info.md` — dummy data, modular/hackathon-friendly
-- `/Descriptive_docs_for_docs/Extra_info/Potential_info.md` — data sources and schema preparedness
-- `/PRD.md` — product name, track, objective, core features, planned features
+
 
 ## Output Format Requirements
 
@@ -152,73 +140,28 @@ When filling out Implementation.md, project_structure.md, and UI_UX_doc.md, use 
 - **Should-Have Features:** [e.g. comms/telemetry adapters, replay abstraction, missing-field tolerance]
 - **Nice-to-Have Features:** Real map + all ASV locations; video/camera feed; overlays (weather, etc.); replay controller; 3D AR/spatial view (e.g. three.js)
 
-## Recommended Tech Stack
-### Frontend:
-- **Framework:** [Technology] - [Brief justification]
-- **Documentation:** [Link to official docs]
 
-### Backend:
-- **Framework:** [Technology] - [Brief justification]
-- **Documentation:** [Link to official docs]
-
-### Database:
-- **Database:** [Technology] - [Brief justification]
-- **Documentation:** [Link to official docs]
-
-### Additional Tools:
-- **[Tool Category]:** [Technology] - [Brief justification]
-- **Documentation:** [Link to official docs]
 
 ## Implementation Stages
 
-### Stage 1: Foundation & Setup (align with Phase 1 — Adaptive Layer)
-**Duration:** [Estimated time]
-**Dependencies:** None
+### Stage 1: Foundation & Setup
 
 #### Sub-steps:
-- [ ] Set up development environment and project structure (per project_structure.md)
-- [ ] Define canonical TypeScript models and JSON Schemas (OwnshipState, MissionObject, Contact, AlertEvent, DecisionEpisode, etc.)
-- [ ] Define adapter interfaces; implement normalizeRawFeed(raw: unknown) → NormalizedMissionState
-- [ ] Create realistic mock maritime data and wire to adapters
-- [ ] Create flowchart of app data flow (raw → normalize → explanation → presentation)
+- [ ] Set up development environment
+- [ ] Initialize project structure
+- [ ] Configure build tools and CI/CD
 
-### Stage 2: Core Features (Explanation + Presentation — Phases 2 & 3)
-**Duration:** [Estimated time]
+### Stage 2: Core Features 
 **Dependencies:** Stage 1 completion
 
-#### Sub-steps:
-- [ ] Implement explanation synthesizer (normalized signals → operator-ready: what changed, why, 2–4 facts, what next)
-- [ ] Main mission map: ownship position, planned vs actual path, waypoints, mission/search polygon, nearby contacts, hazard/boundary zones
-- [ ] Event timeline/alert feed: recent events in time order, filtered meaningful, color-coded by severity, click-through with Fleet Commander feedback
-- [ ] Fleet Commander: natural language input, Situation/Reason/Confidence/Recommendation responses, vessel context and alert awareness
-- [ ] Routing and navigation; polish UI (simple, not overengineered)
-
-### Stage 3: Advanced Features
-**Duration:** [Estimated time]
-**Dependencies:** Stage 2 completion
-
-#### Sub-steps:
-- [ ] Comms/telemetry adapters; staleness and comms-degraded UI (last-heard, degraded banners)
-- [ ] Replay/scenario-pack abstraction if applicable
-- [ ] Optional overlays and data-source preparedness (weather, AIS, NOAA, etc.) per Potential_info
-- [ ] Testing and edge cases (missing fields, variable rates)
-
-### Stage 4: Polish & Optimization (and optional extra features)
-**Duration:** [Estimated time]
+### Stage 3: Polish & Optimization (and optional extra features)
 **Dependencies:** Stage 3 completion
 
 #### Sub-steps:
 - [ ] Comprehensive testing and error handling
 - [ ] Performance optimization and UI/UX polish
-- [ ] Prepare for deployment
-- [ ] If time permits: real map + all ASV locations; video/sensor screen; overlays; replay controller; 3D/spatial view
 
-## Resource Links
-- [Technology 1 Documentation]
-- [Technology 2 Documentation]
-- [Best Practices Guide]
-- [Tutorial/Getting Started Guide]
-```
+
 
 ## Important Guidelines
 
@@ -309,17 +252,16 @@ project-name/
 
 ### UI_UX_doc.md
 This file should contain:
-- **Design system specifications** (polished but simple; avoid overengineering)
-- **UI component guidelines** — main mission map, event timeline/alert feed, Fleet Commander card
-- **User experience flow diagrams** — data flow raw → normalize → explanation → presentation; operator journey (what/why/risk/next/care?)
+- **Design system specifications**
+- **UI component guidelines**
+- **User experience flow diagrams**
 - **Responsive design requirements**
 - **Accessibility standards**
 - **Style guide and branding**
 - **Component library organization**
-- **User journey maps** — answering the five operator questions
-- **Wireframe references** — map + timeline + Fleet Commander layout
+- **User journey maps**
+- **Wireframe references**
 - **Design tool integration**
-- **FleetCommand-specific:** map elements (ownship, paths, waypoints, polygon, contacts, hazards); timeline (filtered, severity-coded, click-through); Fleet Commander response format (Situation, Reason, Confidence, Recommendation)
 
 ## Workflow for Documentation Creation
 
